@@ -9,7 +9,7 @@
 - **No breaking of encryption or DRM.** Encrypted games are not supported, full stop. No keys, no key finders,
   no unpacking protected executables, no injecting into a running game.
 - **Third-party readers are not bundled.** The user downloads them (AssetStudioModCLI - MIT; relic-tool-sga -
-  GPL-3; blender_dow - GPL-3; CUE4Parse - Apache-2.0, built locally into `otue`; later SourceIO - MIT, ...).
+  GPL-3; blender_dow - GPL-3; CUE4Parse - Apache-2.0, built locally into `otue`; SourceIO - MIT (prebuilt pylib.pyd in its release), ...).
   Proprietary pieces are never fetched by the tool: no Oodle DLL (only one already in the install or on the
   user's PC) and no mappings file (only the user's own `.usmap`). The tool says where to get
   them and which versions it was tested with.

@@ -90,8 +90,11 @@ def check_package(pkg_dir):
             m = w["mount"]
             if m.startswith("mesh_group:") and m.split(":", 1)[1] not in groups:
                 errs.append(f"loadout {lo['id']}: mesh group {m} not in mesh_groups")
-            if m.startswith(("joint:", "socket:")) and w["weapon_id"] not in ids:
-                errs.append(f"loadout {lo['id']}: weapon {w['weapon_id']} has a {m.split(':')[0]} mount but no weapon file")
+            if m.startswith(("joint:", "socket:")) or m == "bonemerge":
+                if w["weapon_id"] not in ids:
+                    errs.append(f"loadout {lo['id']}: weapon {w['weapon_id']} has a {m.split(':')[0]} mount but no weapon file")
+                elif m == "bonemerge" and not next(x for x in pkg["weapons"] if x["id"] == w["weapon_id"]).get("mount_joint"):
+                    errs.append(f"loadout {lo['id']}: bonemerge weapon {w['weapon_id']} needs mount_joint (the model's empty on the shared bone)")
         for g in lo.get("mesh_groups", []):
             if g not in groups:
                 errs.append(f"loadout {lo['id']}: shows mesh group {g!r} that is not in mesh_groups")

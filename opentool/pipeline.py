@@ -104,18 +104,23 @@ class Pipeline:
         return sorted(g for g in groups if g in shown)
 
     def weapons_for(self, cfg, pkg, lo, pdir):
-        """joint/socket-mounted weapons of a loadout -> attach entries (the other mounts are mesh groups)."""
+        """joint/socket/bonemerge-mounted weapons of a loadout -> attach entries (the other mounts are mesh groups).
+        Bonemerge (Source): the adapter wrote the weapon in its shared bone's frame and put an empty on the model's
+        bone of that name (`mount_joint`), so it mounts like a joint."""
         byid = {w["id"]: w for w in pkg["weapons"]}
         out = []
         for w in lo["weapons"]:
             m = w["mount"]
-            if not m.startswith(("joint:", "socket:")):
+            if not (m.startswith(("joint:", "socket:")) or m == "bonemerge"):
                 continue
             wp = byid.get(w["weapon_id"])
             if not wp or not wp.get("file"):
                 continue
+            joint = wp.get("mount_joint") if m == "bonemerge" else m.split(":", 1)[1]
+            if not joint:
+                continue
             wcfg = (cfg.get("weapon_mounts") or {}).get(w["weapon_id"], {})
-            out.append({"fbx": os.path.join(pdir, wp["file"]), "joint": m.split(":", 1)[1], "name": w["weapon_id"],
+            out.append({"fbx": os.path.join(pdir, wp["file"]), "joint": joint, "name": w["weapon_id"],
                         "mat_key": wp.get("mat_key"), "hidden": wp.get("hidden", []), **wcfg})
         for w in [w for w in out if w.get("show_in_host")]:  # a part the host weapon already carries (bayonet)
             h = w["show_in_host"]

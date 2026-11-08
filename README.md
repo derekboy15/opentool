@@ -10,8 +10,8 @@ Two halves:
 - **Adapters** (one per engine) read the game with a third-party reader *you* download and write one standard
   **export package**. v1 ships `unity_assetstudio` (Unity, via AssetStudioModCLI), `relic_essence1`
   (Dawn of War 1 era Relic games, via relic-tool-sga + blender_dow) and `unreal_cue4parse` (UE4/UE5, via a small
-  CLI on CUE4Parse; tested on Return to Moria and Aliens: Dark Descent). Source is designed (DESIGN.md §3.3) and
-  comes in milestone 3.
+  CLI on CUE4Parse; tested on Return to Moria and Aliens: Dark Descent) and `source_sourceio` (Source 1 .mdl
+  games, via the SourceIO Blender add-on; tested on Left 4 Dead 2).
 - **One shared back end** (Blender 5.2) that only ever sees the package: ingest → scale → pose select → pose →
   weapons → cleanup → relief → solid → thicken → base → checks → review sheet → STL + report.
 
@@ -49,9 +49,12 @@ out (no keys, no DRM work), mod content is personal-use only with credits kept.
    | Relic | `relic-tool-sga-v2==2.1.0` in its own venv (`pip install relic-tool-sga-v2==2.1.0 "setuptools<81"`; `fs` still needs `pkg_resources`) | PyPI | GPL-3 |
    | Unreal | CUE4Parse + CUE4Parse-Conversion `1.2.2.202610` and their 40 dependencies (pinned in `adapters/unreal_cue4parse/cli/packages.lock.json`), restored by `build_reader.py` | nuget.org | Apache-2.0 (deps MIT / Apache-2.0 / BSD-2; ImageSharp: Six Labors split licence) |
    | Unreal | source for `CUE4Parse-Natives.dll` (ACL animation decompression; most UE4.25+ games): CUE4Parse tag `1.2.2.202610` (its `CUE4Parse-Natives` folder), nfrechette/acl `414689d` (into `CUE4Parse-Natives/ACL/external/acl`), nfrechette/rtm `d7982f2` (into `acl/external/rtm`) | github.com | Apache-2.0, MIT, MIT |
+   | Source 1 | `SourceIO.zip` from release 5.5.4 (5,966,664 bytes, sha256 `c6da6d989120b430df0a74315307fc42b8f87fa3c1d98554ee589c7e93f79e4d`; save it as e.g. `SourceIO-5.5.4.zip`) | https://github.com/REDxEYE/SourceIO/releases/tag/5.5.4 | MIT |
 
-   Unzip AssetStudio anywhere (it needs .NET Framework 4.7.2, part of Windows 10/11). The blender_dow zip can stay
-   zipped: the tool extracts it once into your workspace.
+   Unzip AssetStudio anywhere (it needs .NET Framework 4.7.2, part of Windows 10/11). The blender_dow and SourceIO
+   zips can stay zipped: the tool extracts each once into your workspace (SourceIO's prebuilt `pylib.pyd` is part of
+   that release). Source games are read in place from their VPKs, in the order the game's `gameinfo.txt` mounts them;
+   nothing is unpacked.
 
    Unreal: build the reader once with the .NET 10 SDK (and CMake + Visual Studio Build Tools for the ACL part):
    `python -I adapters/unreal_cue4parse/build_reader.py C:/opentool-readers/ue --natives <CUE4Parse-Natives folder>`,

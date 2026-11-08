@@ -23,6 +23,7 @@ relic_python = ""         # Relic: python.exe of a venv with relic-tool-sga-v2 i
 blender_dow = ""          # Relic: the blender_dow add-on folder (has __init__.py) or its release .zip
 ue_cli = ""               # Unreal: otue.exe built by adapters/unreal_cue4parse/build_reader.py
 oodle_dll = ""            # Unreal, optional: an Oodle DLL you already have, for Oodle-compressed games whose install has none
+sourceio = ""             # Source 1: the SourceIO add-on release .zip (or its unpacked SourceIO folder)
 
 # one block per game you own and have installed; the install folder is only ever read
 [games.battlesector]
@@ -38,3 +39,8 @@ profile = "dow1"
 # install = "D:/SteamLibrary/steamapps/common/The Lord of the Rings Return to Moria™"
 # profile = "moria"
 # usmap = ""
+
+# Source 1 games: install = the game folder (the one holding the game's exe and e.g. left4dead2/gameinfo.txt)
+# [games.l4d2]
+# install = "D:/SteamLibrary/steamapps/common/Left 4 Dead 2"
+# profile = "l4d2"

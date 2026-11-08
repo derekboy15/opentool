@@ -1,0 +1,47 @@
+{
+ "_doc": "Left 4 Dead 2 (Source 1, MDL v49, VPKs not encrypted). install = the 'Left 4 Dead 2' folder (the one holding left4dead2/ and left4dead2.exe). SourceIO mounts the game from left4dead2/gameinfo.txt (update, the three DLC folders, left4dead2, hl2: the game's own order). Survivors keep their animations in $includemodel files (models/survivors/anim_<name>.mdl); weapons are world models (w_*.mdl) that bonemerge onto the survivor's ValveBiped.weapon_bone. Which weapon a survivor holds is a game-script matter, so the profile names the loadouts.",
+ "name": "Left 4 Dead 2",
+ "adapter": "source_sourceio",
+ "source": {
+  "game_dir": "left4dead2",
+  "unit_folders": ["models/survivors/", "models/infected/"],
+  "skip_model": "/(anim_|gestures_)|_w_|/limbs/|/gibs/|shadertest|_test\\.mdl$|morph_test|/cim_|faceplate|deathpose|tongue_attach",
+  "group_from": "models/(?P<group>[^/]+)/",
+  "min_bones": 10,
+  "max_clips": 40,
+  "attachments": ["eyes", "weapon_bone", "L_weapon_bone", "primary", "pistol", "melee"],
+  "eye_attachment": "eyes",
+  "normal_encoding": "auto",
+  "normal_green": "directx",
+  "reader_version": "SourceIO 5.5.4",
+  "activity_roles": [["DIE|DEATH|INCAP|RAGDOLL", "die"], ["MELEE|SHOVE|STOMP", "melee"],
+                     ["SHOOT|PRIMARYATTACK|FIRE", "shoot"], ["AIM", "aim"],
+                     ["WALK|RUN|JUMP|CLIMB|LADDER", "move"], ["IDLE", "idle"], [".*", "other"]],
+  "weapons": {
+   "rifle_m16a2": {"model": "models/w_models/weapons/w_rifle_m16a2.mdl", "bone": "ValveBiped.weapon_bone",
+                   "_doc": "M16 assault rifle world model; bonemerged on the survivor's weapon_bone"}
+  },
+  "units": [
+   {"id": "survivor_gambler", "name": "Nick", "group": "survivors", "class": "infantry",
+    "model": "models/survivors/survivor_gambler.mdl",
+    "_source": "Nick (survivor_gambler.mdl, animations in anim_gambler.mdl); rifle sequences carry ACT_*_RIFLE activities",
+    "loadouts": [{"id": "rifle_m16", "weapons": [{"slot": 1, "weapon_id": "rifle_m16a2", "mount": "bonemerge"}]}],
+    "default_loadout": "rifle_m16",
+    "clip_activity": "_RIFLE",
+    "credits": []}
+  ]
+ },
+ "rig_map": {"pelvis": "ValveBiped.Bip01_Pelvis", "spine": "ValveBiped.Bip01_Spine2", "neck": "ValveBiped.Bip01_Neck1",
+             "head": "ValveBiped.Bip01_Head1",
+             "shoulder.L": "ValveBiped.Bip01_L_UpperArm", "elbow.L": "ValveBiped.Bip01_L_Forearm", "wrist.L": "ValveBiped.Bip01_L_Hand",
+             "shoulder.R": "ValveBiped.Bip01_R_UpperArm", "elbow.R": "ValveBiped.Bip01_R_Forearm", "wrist.R": "ValveBiped.Bip01_R_Hand",
+             "hip.L": "ValveBiped.Bip01_L_Thigh", "knee.L": "ValveBiped.Bip01_L_Calf", "ankle.L": "ValveBiped.Bip01_L_Foot", "ball.L": "ValveBiped.Bip01_L_Toe0",
+             "hip.R": "ValveBiped.Bip01_R_Thigh", "knee.R": "ValveBiped.Bip01_R_Calf", "ankle.R": "ValveBiped.Bip01_R_Foot", "ball.R": "ValveBiped.Bip01_R_Toe0",
+             "weapon.1": "ValveBiped.weapon_bone",
+             "_doc": "valvebiped preset (Half-Life 2 / L4D / TF2 humans). The eye role is the 'eyes' attachment, added by the export as a non-deforming bone attach_eyes."},
+ "clip_roles": [["^Idle", "idle"], ["Run|Walk|Jump", "move"], ["Melee|Shove", "melee"], [".*", "other"]],
+ "backend": {
+  "pose_select": {"exclude_roles": ["die", "other"], "role_priority": ["idle", "aim", "shoot", "melee", "move"]},
+  "_doc": "Rifle idles (standing, calm, crouching) first; melee shoves and stomps are in, deaths and scripted terror sequences out."
+ }
+}

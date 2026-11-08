@@ -23,6 +23,9 @@ files and DLLs, and for community readers.
   the tool never makes one. Oodle compression needs an Oodle DLL the user already has (usually none in the
   install: it is linked into the exe); never download one. The `unreal_cue4parse` adapter runs these gates
   itself (`adapters/unreal_cue4parse/gates.py`): an Unreal game only needs a profile, not a new adapter.
+- Source 1: VPKs are not encrypted (a few old games ICE-encrypt script files, never models). The
+  `source_sourceio` adapter reads any Source 1 game whose models are MDL v44-v49 (HL2, TF2, L4D/L4D2, Portal 2
+  era): a new game only needs a profile (`game_dir`, unit folders, weapons and loadouts, activity roles).
 - Unity: bundles with a non-standard signature, or that AssetStudio reports as encrypted/obfuscated → out.
 - Anything that needs a key, a patched or unpacked executable, or injecting into the running game → **out**.
 Tell the user plainly. No key hunting.

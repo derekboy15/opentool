@@ -1,6 +1,6 @@
 # Open tool: game models → printable 28 mm miniatures (design)
 
-*Draft 1, 2026-11-07. **Approved 2026-11-07**; every decision in §11 is settled. Milestone 1 (back end, Unity, Relic) accepted 2026-11-07; milestone 2 (Unreal) accepted 2026-11-08; milestone 3 (Source) waits for a Source game to pilot on.*
+*Draft 1, 2026-11-07. **Approved 2026-11-07**; every decision in §11 is settled. Milestone 1 (back end, Unity, Relic) accepted 2026-11-07; milestone 2 (Unreal) accepted 2026-11-08; milestone 3 (Source, piloted on Left 4 Dead 2) accepted 2026-11-08.*
 
 ## 1. What it is, in one paragraph
 
@@ -55,7 +55,7 @@ An adapter is two things:
 | Unity | AssetStudioModCLI (aelurum's AssetStudio fork) | MIT (verify at download) | **v1.** Proven on Battlesector: Animator export with bound clips, weapon FBX split, multi-bundle staging |
 | Relic Essence 1 (DoW, WA, DC, Soulstorm, mods) | relic-tool-sga-v2 (unpack) + amorgun's blender_dow | relic-tool: check; blender_dow **GPL-3** | **v1.** Proven: 2,810 models exported, imports headless in Blender 5.2 with PIL stubbed |
 | Unreal 4/5 | `otue`, a small CLI on CUE4Parse (Apache-2.0) + CUE4Parse-Natives (ACL) built from source; FModel (GPL-3, GUI) by hand | see left | **M2 (2026-11-08).** Return to Moria + Aliens: Dark Descent. Only **unencrypted** containers; unversioned games only with the user's own mappings file (decision 9); Oodle games only with an Oodle DLL the user has |
-| Source 1 (Valve) | SourceIO Blender add-on (MIT); fallback Crowbar + Blender Source Tools (GPL) | see left | designed in §3.3. VPKs aren't encrypted. No Source game installed here to pilot on (decision 8) |
+| Source 1 (Valve) | SourceIO Blender add-on (MIT) 5.5.4, enabled per run; fallback Crowbar + Blender Source Tools (GPL) not needed | see left | **M3 (2026-11-08).** Left 4 Dead 2. VPKs aren't encrypted and are read in place in the game's own mount order |
 
 Other engines (Frostbite, Creation/Bethesda, Godot, FromSoft, in-house engines) go through the "no adapter yet"
 path (§6).
@@ -230,14 +230,39 @@ models. The gate still runs, and reports.
 | normal maps | VTF bump maps, DXT. Green convention varies by game → profile setting, checked on the pilot sheet |
 | loadouts | NPC/survivor weapon lists live in game scripts and maps, not the model → profile or manual |
 
+**What the M3 pilot settled (2026-11-08).**
+
+- **Reader:** SourceIO 5.5.4 (MIT, one release zip with a prebuilt `pylib.pyd`, Python ABI3) imports headless in
+  Blender 5.2 with `--factory-startup`, enabled for the run from the workspace like blender_dow. Its content
+  manager mounts the game from `gameinfo.txt` (L4D2: update, the three DLC folders, left4dead2, hl2) and reads
+  every file inside the VPKs: nothing is unpacked. Crowbar and Blender Source Tools were not needed.
+- **Listing needs no reader:** `vpk.py` reads the `pak01_dir.vpk` name trees (plain reads, 0.1 s for 321 models);
+  one Blender scan then reads the candidate MDL headers for bones, attachments, body groups and sequences.
+- **SourceIO's frame-animation decoder is wrong for L4D2.** L4D2 keeps survivor animations in `STUDIO_FRAMEANIM`
+  blocks inside `$includemodel` files (`anim_<name>.mdl` + `.ani`). SourceIO reads a block as either constants
+  or per-frame data (Valve's format has both) and leaves unflagged channels at zero, so 855 of Nick's ~2,300
+  animations failed, all rifle idles among them. The adapter patches that one function at run time
+  (`sio.patch_frame_anims`); the add-on stays as downloaded. With it, every clip the profile asks for decodes.
+- **Clips = sequences, roles = activities.** A clip is a sequence that is not a delta (layers, aim matrices,
+  gestures), plays one animation and has an activity; `ACT_IDLE_RIFLE` -> idle, `ACT_MELEE_*` -> melee, by
+  regexes in the profile. Blended sequences (9-way walk/run grids) are left out. A unit's `clip_activity`
+  (`_RIFLE`) keeps the ones that hold its weapon.
+- **Bonemerge without a new back-end path.** SourceIO builds each bone from the MDL's own matrix, so a Blender
+  bone's frame is the game bone's frame. The weapon world model is written in the frame of its
+  `ValveBiped.weapon_bone`, and the character carries an empty `bm_ValveBiped.weapon_bone` on its bone of that
+  name; the back end mounts the weapon on that empty like a joint (contract: `mount: bonemerge` + the weapon's
+  `mount_joint`). Weapon sub-bones (magazine, bolt) follow the weapon bone rigidly.
+- **Eye line from the `eyes` attachment**, added as a non-deforming bone `attach_eyes` under the head so the
+  back end's `eye` role resolves. Other attachments the profile names become bone-parented empties.
+- **Scale:** SourceIO imports at 1 unit = 1/16 ft (0.01905 m); the package is in metres and the scale rule
+  (eye height for infantry) decides the print size.
+
 **Source 2 note.** ValveResourceFormat (Source 2 Viewer, MIT; its CLI is to check) decompiles `.vmdl_c` and
 exports glTF with skeleton and animations. That's very close to the contract already, so a Source 2 adapter would
 be small. It's not in this design's scope.
 
-**Pilot target.** No complete Source game was installed on the author's PC (2026-11-07). The Left 4 Dead 2 folder holds only config
-files (no `gameinfo.txt` or VPKs), and the CS:GO and Dota 2 folders hold no game data either. A pilot needs one
-installed: Left 4 Dead 2 (infected and survivors), Half-Life 2, or Team Fortress 2 (the TF2 classes would print
-well). Decision 8.
+**Pilot target.** Left 4 Dead 2 (decision 8), installed 2026-11-08: Nick (`survivor_gambler.mdl`) with the M16
+(`w_rifle_m16a2.mdl`), Derek's pick.
 
 ### 3.4 What the 3–5 days per adapter are spent on
 
@@ -397,7 +422,7 @@ Unreal and Source adapters are in v1 too (decision 5): about 3.5–4.5 and 3–3
 
 - **M1:** back end + Unity + Relic (below).
 - **M2:** Unreal, piloted on Return to Moria (UE4), then one UE5 try on Abiotic Factor.
-- **M3:** Source, piloted on Left 4 Dead 2 once it's installed.
+- **M3:** Source, piloted on Left 4 Dead 2 (Nick with the M16).
 
 **Milestone 1: back end + Unity + Relic, two known units end to end.**
 

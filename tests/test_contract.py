@@ -127,5 +127,61 @@ class Relic(unittest.TestCase):
         self.assertEqual(whm.mesh_role("guardsmen_head02"), "head")
 
 
+class Source(unittest.TestCase):
+    def test_gameinfo_order_and_vpk_names(self):
+        import struct
+        from adapters.source_sourceio import vpk
+        with tempfile.TemporaryDirectory() as d:
+            for sub in ("mod", "mod_dlc1", "hl2", "update"):
+                os.makedirs(os.path.join(d, sub))
+            with open(os.path.join(d, "mod", "gameinfo.txt"), "w") as f:
+                f.write('"GameInfo" { FileSystem { SearchPaths {\n Game update\n Game mod_dlc1 // dlc\n'
+                        ' Game |gameinfo_path|.\n Game hl2\n Game missing } } }')
+            self.assertEqual([os.path.basename(p) for p in vpk.search_paths(os.path.join(d, "mod"))],
+                             ["update", "mod_dlc1", "mod", "hl2"])
+
+            def tree(entries):  # {ext: {folder: [names]}} -> VPK v2 directory tree bytes
+                b = bytearray()
+                for ext, folders in entries.items():
+                    b += ext.encode() + b"\0"
+                    for folder, names in folders.items():
+                        b += folder.encode() + b"\0"
+                        for n in names:
+                            b += n.encode() + b"\0" + struct.pack("<IHHIIH", 0, 0, 0, 0, 0, 0xFFFF)
+                        b += b"\0"
+                    b += b"\0"
+                return bytes(b + b"\0")
+            for sub, entries in (("update", {"mdl": {"models/survivors": ["nick"]}}),
+                                 ("mod", {"mdl": {"models/survivors": ["nick", "ellis"]}, "vtf": {"materials": ["a"]}})):
+                t = tree(entries)
+                with open(os.path.join(d, sub, "pak01_dir.vpk"), "wb") as f:
+                    f.write(struct.pack("<III", vpk.VPK_SIG, 2, len(t)) + b"\0" * 16 + t)
+            files = vpk.list_files(os.path.join(d, "mod"), ("models/",))
+            self.assertEqual(files, {"models/survivors/nick.mdl": "update/pak01_dir.vpk",
+                                     "models/survivors/ellis.mdl": "mod/pak01_dir.vpk"})
+
+    def test_bonemerge_needs_mount_joint(self):
+        with tempfile.TemporaryDirectory() as d:
+            pkg = minimal_package(d)
+            os.makedirs(os.path.join(d, "weapons"))
+            open(os.path.join(d, "weapons", "gun.glb"), "wb").close()
+            pkg["weapons"] = [{"id": "gun", "file": "weapons/gun.glb"}]
+            pkg["loadouts"][0]["weapons"][0]["mount"] = "bonemerge"
+            write(d, pkg)
+            self.assertTrue(any("mount_joint" in e for e in contract.check_package(d)[0]))
+            pkg["weapons"][0]["mount_joint"] = "bm_ValveBiped.weapon_bone"
+            write(d, pkg)
+            self.assertEqual(contract.check_package(d)[0], [])
+
+    def test_l4d2_profile(self):
+        p = C.game_profile("l4d2")
+        self.assertEqual(p["adapter"], "source_sourceio")
+        from adapters.source_sourceio import adapter as A
+        rules = p["source"]["activity_roles"]
+        role = lambda act: A.act_role({"activity": act, "name": ""}, rules)  # noqa: E731
+        self.assertEqual([role(a) for a in ("ACT_IDLE_RIFLE", "ACT_MELEE_Sweep_Rifle_IDLE", "ACT_RUN_RIFLE", "ACT_DIERAGDOLL")],
+                         ["idle", "melee", "move", "die"])
+
+
 if __name__ == "__main__":
     unittest.main()
