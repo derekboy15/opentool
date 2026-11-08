@@ -68,7 +68,16 @@ out (no keys, no DRM work), mod content is personal-use only with credits kept.
    `[games.<id>]` block per installed game (`install` = the game folder; `profile` = a file in
    `profiles/games/`). Optional: `[style] profile = "derek"` for one person's taste rules instead of neutral defaults.
 
-4. Check everything: `.venv\Scripts\python -I ot.py doctor`
+4. Add the skill to Claude Code: copy this repo's `skill` folder to `%USERPROFILE%\.claude\skills\opentool-minis\`
+   (so that `SKILL.md` sits directly in that folder), then start Claude Code in the repo folder. Claude then
+   follows the workflow, the approval gates and the new-engine path; ask it e.g. "make a miniature of
+   <unit> from <game>".
+
+   ```
+   xcopy /E /I skill "%USERPROFILE%\.claude\skills\opentool-minis"
+   ```
+
+5. Check everything: `.venv\Scripts\python -I ot.py doctor`
 
 ## Use
 
