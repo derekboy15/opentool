@@ -1,0 +1,40 @@
+# opentool.toml - the only file you edit. Use forward slashes in paths.
+
+[paths]
+blender = "C:/Program Files/Blender/blender.exe"   # Blender 5.2.x
+workspace = ""            # a folder OUTSIDE this repo for packages, work files, prints, logs, e.g. "D:/opentool-work"
+
+[runner]                  # PC-wide caps; you can lower them, not switch them off
+max_jobs = 3              # heavy jobs (Blender etc.) at once on this PC, across every tool that shares slot_dir
+mem_gb = 16               # committed-memory cap per job (hard max 24). A cap hit = voxel/grid too fine: fix the input
+free_margin_gb = 4        # a job starts only with mem_gb + this free
+slot_dir = ""             # lock folder shared by every tool on this PC that runs Blender (default %LOCALAPPDATA%/opentool/slots)
+timeout_min = 240
+
+[printer]
+profile = "p2s_0.2"       # profiles/printers/<name>.json
+
+[style]
+profile = ""              # "" = neutral defaults, or profiles/styles/<name>.json (e.g. "derek")
+
+[readers]                 # third-party readers you download yourself (README, "Readers")
+assetstudio_cli = ""      # Unity: folder of AssetStudioModCLI (net472 build) or its .exe
+relic_python = ""         # Relic: python.exe of a venv with relic-tool-sga-v2 installed
+blender_dow = ""          # Relic: the blender_dow add-on folder (has __init__.py) or its release .zip
+ue_cli = ""               # Unreal: otue.exe built by adapters/unreal_cue4parse/build_reader.py
+oodle_dll = ""            # Unreal, optional: an Oodle DLL you already have, for Oodle-compressed games whose install has none
+
+# one block per game you own and have installed; the install folder is only ever read
+[games.battlesector]
+install = ""              # e.g. "D:/SteamLibrary/steamapps/common/Warhammer 40000 Battlesector"
+profile = "battlesector"
+
+[games.dow1]
+install = ""              # the "Dawn of War Gold" folder (Gold Edition: base game + Winter Assault)
+profile = "dow1"
+
+# Unreal games: usmap = a .usmap mappings file you already have (only for games cooked with unversioned properties)
+# [games.moria]
+# install = "D:/SteamLibrary/steamapps/common/The Lord of the Rings Return to Moria™"
+# profile = "moria"
+# usmap = ""

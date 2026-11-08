@@ -1,0 +1,37 @@
+{
+ "_doc": "Aliens: Dark Descent (Unreal Engine 4.27, IoStore, uncompressed, versioned properties: no mappings file, no Oodle DLL). install = the AliensDarkDescent folder (the one holding ASF/). Marines are modular (Marines07/geo_grp parts assembled in Blueprints); the xenomorphs ship as complete meshes on one shared 3ds Max biped skeleton (SK_Alien_Biped_Root_Skeleton: DR_ drone, RU_ runner, WR_ warrior clips).",
+ "name": "Aliens: Dark Descent",
+ "adapter": "unreal_cue4parse",
+ "unreal": {
+  "game": "GAME_UE4_27",
+  "content_root": "ASF/Content",
+  "mesh_prefixes": ["ASF/Content/SK/Aliens"],
+  "anim_prefixes": ["ASF/Content/Blueprint/Animation/Aliens"],
+  "skip_mesh": "/(Test|Egg|Hive)/",
+  "group_from": "/Game/SK/(?P<group>[^/]+)/",
+  "clip_exclude": "Death|Headshot|TakeDamage|Takedamage|Lost|Stasis|Ragdol|Breach|Supress|Impact|_TMP_|Abduct",
+  "max_clips": 40,
+  "normal_encoding": "auto",
+  "normal_green": "directx",
+  "reader_version": "otue on CUE4Parse 1.2.2.202610 (+ CUE4Parse-Natives ACL)",
+  "units": [
+   {"id": "xeno_warrior", "name": "Xenomorph_Warrior", "group": "Aliens", "class": "monster",
+    "mesh": "ASF/Content/SK/Aliens/AlienBiped/Warrior/SK_Alien_Warrior.SK_Alien_Warrior",
+    "loadouts": [{"id": "default", "weapons": []}], "default_loadout": "default",
+    "clip_include": "^WR_",
+    "_clips": "the warrior's own WR_* clips (the drone/runner clips share the skeleton but not the warrior's proportions)",
+    "credits": []}
+  ]
+ },
+ "rig_map": {"pelvis": "Bip001-Pelvis", "spine": "Bip001-Spine1", "neck": "Bip001-Neck", "head": "Bip001-Head",
+             "shoulder.L": "Bip001-L-UpperArm", "elbow.L": "Bip001-L-Forearm", "wrist.L": "Bip001-L-Hand",
+             "shoulder.R": "Bip001-R-UpperArm", "elbow.R": "Bip001-R-Forearm", "wrist.R": "Bip001-R-Hand",
+             "hip.L": "Bip001-L-Thigh", "knee.L": "Bip001-L-Calf", "ankle.L": "Bip001-L-Foot", "ball.L": "Bip001-L-Toe0",
+             "hip.R": "Bip001-R-Thigh", "knee.R": "Bip001-R-Calf", "ankle.R": "Bip001-R-Foot", "ball.R": "Bip001-R-Toe0",
+             "_doc": "3ds Max biped (Bip001-*) with digitigrade legs (HorseLink between calf and foot); no eye joint: a monster, scaled by size not eye height"},
+ "clip_roles": [["Idle|Watch|Hiss|Crouch|Scratch|Roar", "idle"], ["Claw|Bite|Tail|Attack|Jump", "melee"],
+                ["Walk|Run|Strafe|Crawl|Approach|Turn|Dodge", "move"], [".*", "other"]],
+ "backend": {
+  "pose_select": {"exclude_roles": ["die", "other"], "role_priority": ["idle", "melee", "move"]}
+ }
+}

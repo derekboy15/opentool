@@ -1,0 +1,13 @@
+{
+  "_doc": "Bolt Rifle (WPN_BLA_BRF): fixes from v1 that belong to the weapon, not the unit carrying it.",
+  "materials": {
+    "WPN_BLA_BRF": {
+      "cap_open_loops_max_perimeter_mm": 60.0,
+      "note": "the rifle is built from open shells: cap them all so it prints solid"
+    }
+  },
+  "weapon_mounts": {
+    "BoltRifle": {"grip_import_mm": [0, 3.65, -1.17], "muzzle_import_mm": [0, -11.32, 1.35],
+                  "note": "points in the weapon FBX import frame (mm at the print scale) for QA close-ups"}
+  }
+}

@@ -1,0 +1,8 @@
+{
+ "_doc": "Base-game Imperial Guard Guardsman (art/ebps/races/imperial_guard/troops/guardsmen.whm): 28 mm eye height (sole to pupil line), the Cadian reference. 25 mm round base (Citadel Cadian base).",
+ "scale": {
+  "rule": "eye_height",
+  "eye_height_mm": 28.0
+ },
+ "base_size": "25mm"
+}

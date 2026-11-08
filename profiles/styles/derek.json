@@ -1,0 +1,9 @@
+{
+ "_doc": "Derek's taste rules (the tool's defaults are neutral; this is one named style). Infantry scaled to their own eye height (sole to pupil line; Guardsman 28 mm, per-unit targets in the game profiles), bases 25 mm round with a gentle 0.7 mm dome, a very gradual texture (+-0.12 mm, ~1.8 mm features), no rocks/pebbles/grooves and no ground mound round the feet; each planted boot pressed ~0.4 mm into the surface (a shallow pocket fading out over ~1 mm). One watertight STL plus a cut plan, no automatic split. No normal-map relief on skin.",
+ "scale": {"rule": "auto", "eye_height_mm": 28.0},
+ "classes": {"infantry": {"base_size_fallback": "25mm"}},
+ "base_finish": {"top": "dome", "sole_fill": null,
+                 "dome": {"dome_mm": 0.7, "texture_mm": 0.12, "texture_wavelength_mm": 1.8, "press_mm": 0.4,
+                          "pocket_fade_mm": 1.0, "max_raise_mm": 0.3, "grid_mm": 0.08, "seed": 7}},
+ "relief": {"skip_roles": ["skin"]}
+}

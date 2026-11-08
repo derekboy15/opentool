@@ -1,0 +1,482 @@
+{
+ "_doc": "Neutral back-end defaults (opentool). Lengths in mm on the print. Merge order: these <- printer profile <- style profile <- game profile 'backend' <- class <- weapons <- unit files <- job overrides. Taste rules (eye-height targets, base style) live in style profiles, game facts in game profiles.",
+ "materials": {},
+ "height": {
+  "highpass_sigma_mm": 0.43,
+  "lowpass_sigma_mm": 0.03,
+  "feather_mm": 0.16,
+  "clip_percentile": 99.5,
+  "max_slope_nz": 0.25,
+  "flatten": {}
+ },
+ "geometry": {
+  "subdiv": "catmull",
+  "levels": 4,
+  "displace_mm": 0.2,
+  "solidify_mm": 0.12,
+  "voxel_mm": 0.05,
+  "max_tris": 500000,
+  "weld_mm": 0.0001,
+  "cap_open_loops_max_perimeter_mm": 6.0,
+  "cap_exclude_near": [],
+  "inflate_objects": [],
+  "inflate_regions": [],
+  "adaptive_voxel": {
+   "_doc": "Memory-safe solid stage: the voxel is chosen so the predicted build peak stays inside the runner cap (runner.mem_gb). Predicted peak_gb = fixed_gb + gb_per_mtri x remeshed Mtris, remeshed Mtris = ref_mtris x surface/ref_area x (ref_voxel/voxel)^2. Calibrated 2026-11-07 on the v1 Intercessor (surface 5806 mm2, 18.65 Mtris at 0.03 mm): at 0.05 mm the build part peaked at 14.9 GB committed and the separate final remesh at 11.3 GB. A voxel is only ever made coarser than geometry.voxel_mm. If a build still hits the cap, the build stage retries once with voxel_retry_factor x the voxel (logged in the report).",
+   "enabled": true,
+   "ref_area_mm2": 5806.0,
+   "ref_voxel_mm": 0.03,
+   "ref_mtris": 18.65,
+   "fixed_gb": 3.0,
+   "gb_per_mtri": 1.8,
+   "cap_fraction": 0.95,
+   "round_to_mm": 0.005
+  },
+  "adaptive_subdiv": true,
+  "subdiv_edge_voxels": 2.3,
+  "max_subdiv_faces": 6000000,
+  "remesh_process": "separate",
+  "_doc_remesh_process": "'separate': the final voxel remesh, cleanup, decimate and export run in their own Blender process from a saved union mesh, so the probes and the subdivided copies are gone from memory (under the 16 GB cap). 'same': v1 behaviour, one process.",
+  "voxel_retry_factor": 1.2
+ },
+ "connect_floating": {
+  "enabled": true,
+  "max_gap_mm": 0.6,
+  "erode_mm": 0.15,
+  "radius_mm": 0.5,
+  "embed_mm": 0.15,
+  "max_per_shell": 3,
+  "min_spacing_mm": 2.0,
+  "min_shell_volume_mm3": 0.5,
+  "radius_per_size": 0.25,
+  "min_radius_mm": 0.2,
+  "max_extra_gap_mm": 0.25,
+  "max_bridge_gap_mm": 0.3,
+  "max_axis_gap_mm": 3.0,
+  "axis_min_aspect": 3.0,
+  "axis_radius_frac": 0.4,
+  "axis_min_radius_mm": 0.2,
+  "_doc_axis": "elongated floating parts (antenna tips, rods, spikes) left unbridged get a connector continuing their own axis to the nearest real surface within max_axis_gap_mm",
+  "axis_bridge": false,
+  "thin_wall_fallback": false,
+  "eroded_volume_factor": 1.0,
+  "_doc_v1": "axis_bridge / thin_wall_fallback / eroded_volume_factor < 1 are off here so the v1 Intercessor regression reproduces; the big classes turn them on"
+ },
+ "auto_thicken": {
+  "enabled": true,
+  "target_mm": 0.45,
+  "max_offset_mm": 0.2,
+  "min_extent_mm": 0.3,
+  "cell_mm": 0.12,
+  "iterations": 2
+ },
+ "pose": {
+  "source": "animation",
+  "count": 4,
+  "clip": null,
+  "frame": null,
+  "weapons": [],
+  "reparent": [],
+  "loose_items": {
+   "_doc": "Props held in a hand that are not the weapon (grenades...) move to the belt: mirrored from a matching item already on the pelvis, else offset to the hip. Patterns come from the game profile.",
+   "patterns": [],
+   "to_role": "pelvis",
+   "hip_offset_mm": [
+    5.0,
+    0.0,
+    -1.0
+   ]
+  },
+  "feet": {
+   "enabled": true,
+   "mode": "lower",
+   "min_embed_mm": 0.15
+  },
+  "previews": false,
+  "preview_views": [
+   [
+    "front",
+    0,
+    5
+   ],
+   [
+    "side_right",
+    -90,
+    5
+   ],
+   [
+    "three_quarter",
+    -30,
+    10
+   ]
+  ]
+ },
+ "pose_select": {
+  "_doc": "Pick visually distinct, printable frames from the unit's own clips. Clip roles come from the adapter (idle/aim/shoot/move/melee/die/other).",
+  "clip_exclude": [],
+  "samples_per_clip": 24,
+  "max_foot_lift_mm": 0.8,
+  "min_pose_distance": 0.12,
+  "weights": {
+   "planted": 3.0,
+   "clipping": 2.0,
+   "diversity": 1.0
+  },
+  "role_priority": [
+   "idle",
+   "aim",
+   "shoot",
+   "move",
+   "other"
+  ],
+  "exclude_roles": [
+   "die"
+  ]
+ },
+ "base": null,
+ "base_size": null,
+ "qa": {
+  "min_thickness_mm": 0.4,
+  "detail_max_extent_mm": 0.3,
+  "overhang_deg": 45,
+  "overhang_min_area_mm2": 0.5,
+  "overhang_supported_gap_mm": 0.4,
+  "renders": true,
+  "render_set": "batch",
+  "heatmap_closeups": [],
+  "auto_closeups": true
+ },
+ "flag": {
+  "_doc": "check stage: a job that still fails these after the build's own repairs is FLAGGED (never silently fixed).",
+  "max_shells": 1,
+  "max_non_manifold_edges": 0,
+  "max_boundary_edges": 0,
+  "thin_part_min_extent_mm": 0.5,
+  "max_overhang_region_mm2": 60.0,
+  "fit_build_volume": true,
+  "thin_part_min_protrusion_mm": 0.5,
+  "_doc_thin": "thin parts (walls under qa.min_thickness) are flagged when they reach at least thin_part_min_protrusion_mm beyond thick material (spike tips, antennae); shorter lips are displacement fringes on plate rims that the 0.2 mm nozzle merges"
+ },
+ "keep_intermediates": false,
+ "default_material": null,
+ "scale": {
+  "_doc": "rule: eye_height (sole contact plane to pupil line = eye_height_mm), metric (real metres x mm_per_metre, from the package's metres_per_unit), factor (mm per imported unit, fixed). 'auto' = eye_height for infantry, metric for the rest. eye: where the pupil line comes from - the rig's eye role, else a fraction of the head mesh height (flagged as estimated on the sheet), or eye_line_raw given per unit.",
+  "rule": "auto",
+  "eye_height_mm": 28.0,
+  "mm_per_metre": 17.3,
+  "factor": null,
+  "eye": {
+   "method": "auto",
+   "head_fraction": 0.45,
+   "eye_line_raw": null
+  }
+ },
+ "base_sizes": {
+  "flying_large": {
+   "shape": "flying_socket",
+   "socket_diameter_mm": 5.0,
+   "socket_depth_mm": 6.0,
+   "clearance_mm": 0.15,
+   "verify": true,
+   "note": "GW 'Large Flying Base' (60 mm flying base + stem): socket for the stem; diameter to be confirmed by test-fitting (stem_socket_gauge.stl)"
+  },
+  "flying_small": {
+   "shape": "flying_socket",
+   "socket_diameter_mm": 3.2,
+   "socket_depth_mm": 4.0,
+   "clearance_mm": 0.15,
+   "verify": true,
+   "note": "GW 'Small Flying Base' (32 mm flying base + short stem): the print gets a socket for the stem; socket diameter to be confirmed by test-fitting a real stem (pipeline/output/_gauges/stem_socket_gauge.stl)"
+  },
+  "hull": {
+   "shape": "none",
+   "note": "GW: no base, the model stands on its hull/tracks"
+  },
+  "unique": {
+   "shape": "none",
+   "note": "GW: model fits no standard base (agree with the event organiser); built without a base, flagged"
+  },
+  "105x70mm": {
+   "shape": "oval",
+   "bottom_mm": [
+    105.0,
+    70.0
+   ],
+   "top_mm": [
+    103.0,
+    68.0
+   ],
+   "height_mm": 4.5,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "120x92mm": {
+   "shape": "oval",
+   "bottom_mm": [
+    120.0,
+    92.0
+   ],
+   "top_mm": [
+    118.0,
+    90.0
+   ],
+   "height_mm": 4.5,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "150x95mm": {
+   "shape": "oval",
+   "bottom_mm": [
+    150.0,
+    95.0
+   ],
+   "top_mm": [
+    148.0,
+    93.0
+   ],
+   "height_mm": 5.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "170x109mm": {
+   "shape": "oval",
+   "bottom_mm": [
+    170.0,
+    109.0
+   ],
+   "top_mm": [
+    168.0,
+    107.0
+   ],
+   "height_mm": 5.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "60x35.5mm": {
+   "shape": "oval",
+   "bottom_mm": [
+    60.0,
+    35.5
+   ],
+   "top_mm": [
+    58.0,
+    33.5
+   ],
+   "height_mm": 4.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "75x42mm": {
+   "shape": "oval",
+   "bottom_mm": [
+    75.0,
+    42.0
+   ],
+   "top_mm": [
+    73.0,
+    40.0
+   ],
+   "height_mm": 4.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "90x52.5mm": {
+   "shape": "oval",
+   "bottom_mm": [
+    90.0,
+    52.5
+   ],
+   "top_mm": [
+    88.0,
+    50.5
+   ],
+   "height_mm": 4.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "100mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 100.0,
+   "top_diameter_mm": 98.0,
+   "height_mm": 5.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "120mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 120.0,
+   "top_diameter_mm": 118.0,
+   "height_mm": 5.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "130mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 130.0,
+   "top_diameter_mm": 128.0,
+   "height_mm": 5.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "160mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 160.0,
+   "top_diameter_mm": 158.0,
+   "height_mm": 5.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "25mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 25.0,
+   "top_diameter_mm": 23.0,
+   "height_mm": 3.5,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "28.5mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 28.5,
+   "top_diameter_mm": 26.5,
+   "height_mm": 3.5,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "32mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 32.0,
+   "top_diameter_mm": 30.0,
+   "height_mm": 4.0,
+   "sink_mm": 0.3,
+   "note": "Citadel 32 mm round: 32.0 bottom, 30.0 top, 4.0 tall, straight taper (confirmed)"
+  },
+  "40mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 40.0,
+   "top_diameter_mm": 38.0,
+   "height_mm": 4.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "50mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 50.0,
+   "top_diameter_mm": 48.0,
+   "height_mm": 4.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "60mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 60.0,
+   "top_diameter_mm": 58.0,
+   "height_mm": 4.0,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "80mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 80.0,
+   "top_diameter_mm": 78.0,
+   "height_mm": 4.5,
+   "sink_mm": 0.3,
+   "verify": true
+  },
+  "90mm": {
+   "shape": "round",
+   "bottom_diameter_mm": 90.0,
+   "top_diameter_mm": 88.0,
+   "height_mm": 4.5,
+   "sink_mm": 0.3,
+   "verify": true
+  }
+ },
+ "base_finish": {
+  "_doc": "neutral: plain flat top with sole prisms closing tiny gaps under the feet. Style/game profiles add terrain or a dome.",
+  "top": "flat",
+  "sole_fill": {
+   "max_gap_mm": 0.9,
+   "embed_mm": 0.2,
+   "prism_min_down": 0.7
+  }
+ },
+ "classes": {
+  "infantry": {
+   "base_size_fallback": "25mm"
+  },
+  "walker": {
+   "base_size_fallback": "60mm"
+  },
+  "monster": {
+   "base_size_fallback": "60mm"
+  },
+  "bike": {
+   "base_size_fallback": "75x42mm",
+   "pose": {
+    "feet": {
+     "enabled": false
+    }
+   }
+  },
+  "vehicle": {
+   "base_size_fallback": "hull",
+   "pose": {
+    "feet": {
+     "enabled": false
+    }
+   }
+  },
+  "flyer": {
+   "base_size_fallback": "flying_small",
+   "pose": {
+    "feet": {
+     "enabled": false
+    }
+   }
+  },
+  "other": {
+   "base_size_fallback": "32mm"
+  }
+ },
+ "review": {
+  "_doc": "review sheet: numbered views at one scale, silhouette, close-ups of hands / feet / weapon",
+  "resolution": 900,
+  "views": [
+   [
+    "front",
+    0,
+    5
+   ],
+   [
+    "three_quarter_top",
+    -35,
+    30
+   ],
+   [
+    "side_left",
+    90,
+    5
+   ],
+   [
+    "side_right",
+    -90,
+    5
+   ],
+   [
+    "back",
+    180,
+    5
+   ],
+   [
+    "top",
+    0,
+    89
+   ]
+  ],
+  "closeups": true
+ },
+ "contact": {
+  "_doc": "checks: parts 0-0.5 mm apart are a contact band, bridged in print prep (listed, not an error); a boot more than band_mm off the base fails",
+  "band_mm": 0.5
+ }
+}

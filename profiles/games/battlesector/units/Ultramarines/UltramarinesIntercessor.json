@@ -1,0 +1,66 @@
+{
+  "_doc": "Ultramarines Intercessor: every model-specific fix from v1 (configs/intercessor_anim.json). Pose 1 is the frame the user chose for v1 and is the regression test (configs/regression/intercessor_v1.json). Eye-height rule (Derek 2026-10-25): rest-pose eye height 35.5 mm (Assault Intercessor photo 35.5 (forum 35)); lens/eye line 39.2 mm at the global factor read off a head render. GW measurements 2026-10-25: eye height 34.22 mm (Assault Intercessor (my reading, sole convention aligned via the Legionary); 34.952160493827165 mm x 28.0/28.6).",
+  "base_size": "32mm",
+  "base_size_source": "v1 (user-confirmed Citadel 32 mm); Stage 4 checks it against the GW base guide",
+  "poses": [
+    {
+      "clip": "idle_01",
+      "frame": 297,
+      "note": "user's choice for v1: wide planted stance, rifle level across the chest"
+    }
+  ],
+  "materials": {
+    "BLA_GND": {
+      "displace_mm": 0.05,
+      "note": "grenades: texture is 5 um/texel on ~2 mm parts; 0.2 mm displacement shreds them into fins"
+    }
+  },
+  "height": {
+    "flatten": {
+      "ULT_INT": [
+        {
+          "uv_rect": [
+            0.317,
+            0.026,
+            0.361,
+            0.07
+          ],
+          "note": "abdomen vent slots, model's left (+x)"
+        },
+        {
+          "uv_rect": [
+            0.149,
+            0.026,
+            0.193,
+            0.07
+          ],
+          "note": "abdomen vent slots, model's right (-x)"
+        }
+      ]
+    }
+  },
+  "geometry": {
+    "cap_open_loops_max_perimeter_mm": 8.0,
+    "inflate_objects": [
+      {
+        "name": "BLA_GND_Ring*",
+        "offset_mm": 0.11,
+        "note": "grenade pull-rings: 0.20-0.22 mm tube -> >=0.4 mm"
+      }
+    ]
+  },
+  "pose": {
+    "reparent": [
+      {
+        "object": "BLA_GND_FRG_FragGrenade",
+        "mirror_of": "BLA_GND_FRG_FragGrenade.001",
+        "bone": "ROOTSHJnt",
+        "note": "held grenade to the left hip, mirroring the belt frag on the right hip"
+      }
+    ]
+  },
+  "printprep": {
+    "eye_height_mm": 34.22,
+    "eye_line_mm": 39.2
+  }
+}

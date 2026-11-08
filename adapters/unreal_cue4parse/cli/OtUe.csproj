@@ -1,0 +1,22 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later
+     opentool's small Unreal reader CLI on CUE4Parse (Apache-2.0). Built locally by `ot.py reader-build unreal` into the
+     user's readers folder; the repo ships only this source, never a binary or any game data. Versions are pinned and
+     locked (packages.lock.json) so every user restores the same 45 packages from nuget.org. -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>otue</AssemblyName>
+    <RootNamespace>OtUe</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <NoWarn>$(NoWarn);CS1591;NU1603</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CUE4Parse" Version="[1.2.2.202610]" />
+    <PackageReference Include="CUE4Parse-Conversion" Version="[1.2.2.202610]" />
+  </ItemGroup>
+</Project>

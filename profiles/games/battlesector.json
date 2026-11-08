@@ -1,0 +1,391 @@
+{
+ "_doc": "Warhammer 40,000: Battlesector (Unity 6, Addressables). Unity adapter on AssetStudioModCLI; the game-data tables (units, models, weapons, loadouts) are read by profiles/games/battlesector_data.py. backend: the settings the v1 Intercessor was built with (one global scale factor, Citadel bases with v1's terrain).",
+ "name": "Warhammer 40,000: Battlesector",
+ "adapter": "unity_assetstudio",
+ "data_module": "battlesector_data",
+ "unity": {
+  "data_dir_glob": "*_Data",
+  "streaming": "StreamingAssets",
+  "catalog": "StreamingAssets/aa/catalog.bin",
+  "bundle_globs": [
+   "faction-*_assets_all.bundle"
+  ],
+  "startup_bundle": "startup_assets_all.bundle",
+  "prefab_root": "Assets/_Prefabs/UnitModels/Built/",
+  "fps": 25,
+  "metres_per_unit": 0.000568,
+  "_doc_metres": "metres per Blender-imported unit: the v1 factor 1758.838 mm per unit at 1:56-ish scale; a hint only (scale rule below decides)",
+  "prefab_filter": "_Prefabs/UnitModels/"
+ },
+ "rig_map": {
+  "pelvis": "ROOTSHJnt",
+  "ankle.L": "l_Leg_AnkleSHJnt",
+  "ankle.R": "r_Leg_AnkleSHJnt",
+  "ball.L": "l_Leg_BallSHJnt",
+  "ball.R": "r_Leg_BallSHJnt",
+  "knee.L": "l_Leg_KneeSHJnt",
+  "knee.R": "r_Leg_KneeSHJnt",
+  "wrist.L": "l_Arm_WristSHJnt",
+  "wrist.R": "r_Arm_WristSHJnt",
+  "elbow.L": "l_Arm_ElbowSHJnt",
+  "elbow.R": "r_Arm_ElbowSHJnt",
+  "shoulder.L": "l_Arm_ShoulderSHJnt",
+  "shoulder.R": "r_Arm_ShoulderSHJnt",
+  "head": "head_TopSHJnt"
+ },
+ "clip_roles": [
+  [
+   "^idle",
+   "idle"
+  ],
+  [
+   "aim",
+   "aim"
+  ],
+  [
+   "^weapon",
+   "aim"
+  ],
+  [
+   "shoot",
+   "shoot"
+  ],
+  [
+   "move|pivot|startmove",
+   "move"
+  ],
+  [
+   "die|knockdown|getup|damage",
+   "die"
+  ],
+  [
+   "fend|melee",
+   "melee"
+  ],
+  [
+   ".*",
+   "other"
+  ]
+ ],
+ "backend": {
+  "scale": {
+   "rule": "factor",
+   "factor": 1758.838,
+   "_doc": "v1: ONE global factor so units keep their in-game proportions (kept by Derek 2026-10-21). Eye-height targets per unit can override this in unit files."
+  },
+  "pose": {
+   "loose_items": {
+    "patterns": [
+     "*Grenade*",
+     "*GND_FRG*",
+     "*GND_KRK*"
+    ],
+    "to_bone": "ROOTSHJnt",
+    "hand_bone_patterns": [
+     "Arm_WristSHJnt",
+     "fingers",
+     "thumb"
+    ]
+   }
+  },
+  "pose_select": {
+   "exclude_roles": [
+    "die",
+    "melee",
+    "other"
+   ],
+   "role_priority": [
+    "idle",
+    "aim",
+    "shoot",
+    "move"
+   ]
+  },
+  "base_finish": {
+   "_doc": "Applied to every round/oval base (v1 chat fixes): sole/ground fill under hovering feet + textured terrain. Set base.terrain=false for a flat top.",
+   "sole_fill": {
+    "max_gap_mm": 0.9,
+    "embed_mm": 0.2,
+    "slope": 0.7,
+    "blur_passes": 3,
+    "grid_mm": 0.05,
+    "min_down": 0.3,
+    "note": "terrain bases: ground rises to meet sole and welt undersides (normal z < -0.3) hovering up to 0.9 mm above the base top, embed_mm into the boot, sloping away at slope (height per mm, 0.7 = 35 deg), lightly blurred. Plain discs: prisms straight down from faces with normal z < -0.7"
+   },
+   "terrain": {
+    "seed": 7,
+    "undulation_mm": 0.25,
+    "undulation_wavelength_mm": 7.0,
+    "grooves": 9,
+    "groove_depth_mm": 0.35,
+    "groove_width_mm": 0.6,
+    "rocks": 7,
+    "rock_size_mm": [
+     0.9,
+     1.6
+    ],
+    "pebbles": 26,
+    "pebble_size_mm": [
+     0.35,
+     0.75
+    ],
+    "slabs": 3,
+    "slab_size_mm": [
+     1.4,
+     2.2
+    ],
+    "edge_margin_mm": 1.0,
+    "avoid_feet_mm": 0.4,
+    "grid_mm": 0.08,
+    "segments": 1200,
+    "density_ref_top_area_mm2": 706.858,
+    "note": "sized for a 0.2 mm FDM nozzle: grooves >= 0.5 mm wide, pebbles >= 0.35 mm. Feature counts scale with the top area (reference: 30 mm top); segments grow so the rim spacing stays <= grid_mm"
+   },
+   "top": "terrain"
+  },
+  "geometry": {
+   "voxel_mm": 0.05
+  }
+ },
+ "classes": {
+  "infantry": {
+   "base_size_fallback": "32mm",
+   "pose": {
+    "feet": {
+     "enabled": true,
+     "mode": "lower",
+     "min_embed_mm": 0.15
+    }
+   }
+  },
+  "walker": {
+   "base_size_fallback": "60mm",
+   "pose": {
+    "feet": {
+     "enabled": true,
+     "mode": "lower",
+     "min_embed_mm": 0.15
+    }
+   },
+   "geometry": {
+    "max_tris": 1500000,
+    "cap_open_loops_max_perimeter_mm": 12.0
+   },
+   "auto_thicken": {
+    "cell_mm": 0.2
+   },
+   "pose_select": {
+    "max_foot_lift_mm": 1.5
+   },
+   "connect_floating": {
+    "enabled": true,
+    "max_gap_mm": 1.8,
+    "radius_mm": 0.9,
+    "min_radius_mm": 0.35,
+    "max_bridge_gap_mm": 1.6,
+    "max_extra_gap_mm": 0.6,
+    "min_spacing_mm": 4.0,
+    "min_shell_volume_mm3": 2.0,
+    "_doc": "bigger models: road wheels behind tracks, dozer blades, armour plates sit 0.5-1.5 mm off the hull; bridge them with hidden struts",
+    "drop_loose_under_mm3": 4.0,
+    "_doc_drop": "loose bits still separate after bridging and smaller than this (rivets, 2 mm studs) cannot print as loose pieces: dropped and listed in build.json (dropped_loose_parts)",
+    "axis_bridge": true,
+    "thin_wall_fallback": true,
+    "eroded_volume_factor": 0.5
+   }
+  },
+  "bike": {
+   "base_size_fallback": "75x42mm",
+   "pose": {
+    "feet": {
+     "enabled": false
+    },
+    "count": 3,
+    "align_oval": true
+   },
+   "geometry": {
+    "max_tris": 1000000
+   },
+   "auto_thicken": {
+    "cell_mm": 0.16
+   },
+   "pose_select": {
+    "lean_bones": [
+     "BikeRoot",
+     "Bike_Root",
+     "BikeBody",
+     "Chassis"
+    ],
+    "max_lean_deg": 6.0,
+    "hard_max_lean_deg": 12.0,
+    "_doc": "user 2026-10-21: real bike kits stand upright, lift the front wheel, or lean gently; the game's parked-bike lean (~23 deg) overhangs the oval. Side lean is penalised above 6 deg and excluded above 12; wheel lifts are fine.",
+    "max_pitch_deg": 8.0,
+    "hard_max_pitch_deg": 15.0,
+    "_doc_pitch": "front-wheel lifts up to ~15 deg (user: real kits lift the front wheel); a full wheelie (Warbiker Move_Start f25, ~45 deg) stands on the rear wheel and overruns the oval"
+   },
+   "connect_floating": {
+    "enabled": true,
+    "max_gap_mm": 1.8,
+    "radius_mm": 0.9,
+    "min_radius_mm": 0.35,
+    "max_bridge_gap_mm": 1.6,
+    "max_extra_gap_mm": 0.6,
+    "min_spacing_mm": 4.0,
+    "min_shell_volume_mm3": 2.0,
+    "_doc": "bikes: armour plates, exhausts and guns sit up to ~1.5 mm off the frame; same bridging as walkers",
+    "drop_loose_under_mm3": 4.0,
+    "_doc_drop": "loose bits still separate after bridging and smaller than this (rivets, 2 mm studs) cannot print as loose pieces: dropped and listed in build.json (dropped_loose_parts)",
+    "axis_bridge": true,
+    "thin_wall_fallback": true,
+    "eroded_volume_factor": 0.5
+   },
+   "base": {
+    "centre_on": "plan"
+   }
+  },
+  "monster": {
+   "base_size_fallback": "100mm",
+   "pose": {
+    "feet": {
+     "enabled": true,
+     "mode": "lower",
+     "min_embed_mm": 0.2
+    }
+   },
+   "geometry": {
+    "max_tris": 1500000,
+    "cap_open_loops_max_perimeter_mm": 12.0
+   },
+   "auto_thicken": {
+    "cell_mm": 0.2
+   },
+   "pose_select": {
+    "max_foot_lift_mm": 2.0,
+    "max_hover_mm": 1.5,
+    "hard_max_hover_mm": 4.0,
+    "hover_fallback_base": "flying_large",
+    "_doc_hover": "prefer frames with the feet on the ground (Hive Tyrant idles in the air); a pose that still hovers gets a flying-stand socket instead of balancing on a toe or tail tip"
+   },
+   "connect_floating": {
+    "enabled": true,
+    "max_gap_mm": 1.8,
+    "radius_mm": 0.9,
+    "min_radius_mm": 0.35,
+    "max_bridge_gap_mm": 1.6,
+    "max_extra_gap_mm": 0.6,
+    "min_spacing_mm": 4.0,
+    "min_shell_volume_mm3": 2.0,
+    "_doc": "bigger models: road wheels behind tracks, dozer blades, armour plates sit 0.5-1.5 mm off the hull; bridge them with hidden struts",
+    "drop_loose_under_mm3": 4.0,
+    "_doc_drop": "loose bits still separate after bridging and smaller than this (rivets, 2 mm studs) cannot print as loose pieces: dropped and listed in build.json (dropped_loose_parts)",
+    "axis_bridge": true,
+    "thin_wall_fallback": true,
+    "eroded_volume_factor": 0.5
+   }
+  },
+  "vehicle": {
+   "base_size_fallback": "hull",
+   "pose": {
+    "feet": {
+     "enabled": false
+    },
+    "count": 1
+   },
+   "geometry": {
+    "max_tris": 2000000,
+    "cap_open_loops_max_perimeter_mm": 20.0
+   },
+   "auto_thicken": {
+    "cell_mm": 0.24
+   },
+   "connect_floating": {
+    "max_gap_mm": 1.8,
+    "enabled": true,
+    "radius_mm": 0.9,
+    "min_radius_mm": 0.35,
+    "max_bridge_gap_mm": 1.6,
+    "max_extra_gap_mm": 0.6,
+    "min_spacing_mm": 4.0,
+    "min_shell_volume_mm3": 2.0,
+    "_doc": "bigger models: road wheels behind tracks, dozer blades, armour plates sit 0.5-1.5 mm off the hull; bridge them with hidden struts",
+    "drop_loose_under_mm3": 4.0,
+    "_doc_drop": "loose bits still separate after bridging and smaller than this (rivets, 2 mm studs) cannot print as loose pieces: dropped and listed in build.json (dropped_loose_parts)",
+    "axis_bridge": true,
+    "thin_wall_fallback": true,
+    "eroded_volume_factor": 0.5
+   }
+  },
+  "flyer": {
+   "base_size_fallback": "flying_large",
+   "pose": {
+    "feet": {
+     "enabled": false
+    }
+   },
+   "geometry": {
+    "max_tris": 1500000,
+    "cap_open_loops_max_perimeter_mm": 16.0
+   },
+   "auto_thicken": {
+    "cell_mm": 0.2
+   },
+   "connect_floating": {
+    "enabled": true,
+    "max_gap_mm": 1.8,
+    "radius_mm": 0.9,
+    "min_radius_mm": 0.35,
+    "max_bridge_gap_mm": 1.6,
+    "max_extra_gap_mm": 0.6,
+    "min_spacing_mm": 4.0,
+    "min_shell_volume_mm3": 2.0,
+    "_doc": "bigger models: road wheels behind tracks, dozer blades, armour plates sit 0.5-1.5 mm off the hull; bridge them with hidden struts",
+    "drop_loose_under_mm3": 4.0,
+    "_doc_drop": "loose bits still separate after bridging and smaller than this (rivets, 2 mm studs) cannot print as loose pieces: dropped and listed in build.json (dropped_loose_parts)",
+    "axis_bridge": true,
+    "thin_wall_fallback": true,
+    "eroded_volume_factor": 0.5
+   }
+  },
+  "other": {
+   "enabled": false,
+   "base_size_fallback": "25mm",
+   "pose": {
+    "feet": {
+     "enabled": false
+    },
+    "count": 1
+   }
+  }
+ },
+ "regression": {
+  "_doc": "v1 Intercessor (user-chosen pose idle_01 frame 297, 32 mm Citadel base with terrain). The reference STL is a game derivative and is never shipped: only its metrics are. Build your own reference locally to compare surfaces.",
+  "unit": "UltramarinesIntercessor",
+  "loadout": "BoltRifle",
+  "pin": {
+   "clip": "idle_01",
+   "frame": 297
+  },
+  "overrides": {
+   "geometry": {
+    "adaptive_subdiv": false
+   }
+  },
+  "reference_metrics": {
+   "tris": 500000,
+   "shells": 1,
+   "volume_mm3": 7939.454,
+   "dims_mm": [
+    31.995,
+    31.992,
+    45.021
+   ]
+  },
+  "tolerance": {
+   "p99_mm": 0.1,
+   "max_mm": 0.75,
+   "volume_rel": 0.001,
+   "dims_mm": 0.05,
+   "_doc": "Approved by Derek 2026-11-07 for 0.05 mm voxels under the 16 GB cap (v1 was 0.03 mm at 31 GB: p99 0.03, max 0.15). Measured at 0.05 mm: p99 0.091/0.057, max 0.68/0.48 (shoulder-pad connector placement, rifle-front gap), volume 0.026 %, size 0.005 mm."
+  }
+ }
+}

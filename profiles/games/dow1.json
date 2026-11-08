@@ -1,0 +1,23 @@
+{
+ "_doc": "Warhammer 40,000: Dawn of War - Gold Edition (base game + Winter Assault), Relic Essence 1. install = the 'Dawn of War Gold' folder. Archives come from WXP.module (which requires W40k) in load order, then Engine. Soulstorm / Dark Crusade / mods: a profile per install with its own module (e.g. Soulstorm's DXP2.module).",
+ "name": "Warhammer 40,000: Dawn of War (Gold)",
+ "adapter": "relic_essence1",
+ "relic": {"module": "WXP.module", "fps": 30, "metres_per_unit": 1.0,
+           "reader_versions": "blender_dow 0.15.0, relic-tool-sga-v2 2.1.0",
+           "_doc_metres": "1 game unit ~ 1 m (the Guardsman is 1.954 units tall); a hint, the scale rule decides",
+           "credits": {}},
+ "rig_map": {"pelvis": "bip01 pelvis", "spine": "bip01 spine", "head": "bip01 head",
+             "hip.L": "bip01 l thigh", "knee.L": "bip01 l calf", "ankle.L": "bip01 l foot", "ball.L": "bip01 l toe0",
+             "hip.R": "bip01 r thigh", "knee.R": "bip01 r calf", "ankle.R": "bip01 r foot", "ball.R": "bip01 r toe0",
+             "shoulder.L": "bip01 l upperarm", "elbow.L": "bip01 l forearm", "wrist.L": "bip01 l hand",
+             "shoulder.R": "bip01 r upperarm", "elbow.R": "bip01 r forearm", "wrist.R": "bip01 r hand",
+             "_doc": "3ds Max biped naming (bip01 ...) used by most DoW1 infantry; other rigs override per unit"},
+ "clip_roles": [["^idle", "idle"], ["^aim|tracking", "aim"], ["firing", "shoot"], ["^move", "move"],
+                ["melee|sync_kill", "melee"], ["die|death|thrown|sacrifice|cower", "die"], [".*", "other"]],
+ "backend": {
+   "geometry": {"subdiv": "simple", "levels": 1, "adaptive_subdiv": false, "displace_mm": 0.0},
+   "pose_select": {"exclude_roles": ["die", "melee", "other"], "role_priority": ["idle", "aim", "shoot", "move"]},
+   "pose": {"loose_items": {"patterns": []}},
+   "_doc": "DoW1 models are low-poly (the Guardsman's default set is 1,898 triangles) with no normal maps: no relief, and only a simple subdivision so the voxel remesh keeps the faceted shapes instead of Catmull-Clark rounding them away."
+ }
+}

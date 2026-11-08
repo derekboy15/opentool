@@ -1,0 +1,37 @@
+__pycache__/
+*.pyc
+*.blend
+*.blend1
+*.stl
+*.3mf
+*.fbx
+*.glb
+*.gltf
+*.png
+*.dds
+*.tga
+*.log
+logs/
+work/
+output/
+state/
+packages/
+downloads/
+readers/
+# a workspace must live outside the repo; this catches accidents
+workspace/
+.venv/
+# Unreal reader: build output, game containers, user-owned extras
+bin/
+obj/
+*.usda
+*.usd
+*.usdc
+*.usmap
+*.dll
+*.exe
+*.pak
+*.utoc
+*.ucas
+*.uasset
+*.uexp

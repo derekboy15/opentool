@@ -1,0 +1,13 @@
+{
+ "_doc": "Abiotic Factor (Unreal Engine 5, IoStore, uncompressed, UNVERSIONED properties). The gate stops here unless this game's [games.abiotic] block names a usmap mappings file you already have; the tool never makes one.",
+ "name": "Abiotic Factor",
+ "adapter": "unreal_cue4parse",
+ "unreal": {"game": "GAME_UE5_4", "content_root": "AbioticFactor/Content", "mesh_prefixes": ["AbioticFactor/Content"],
+            "anim_prefixes": [], "units": []},
+ "rig_map": {"pelvis": "pelvis", "spine": "spine_02", "neck": "neck_01", "head": "head",
+             "shoulder.L": "upperarm_l", "elbow.L": "lowerarm_l", "wrist.L": "hand_l",
+             "shoulder.R": "upperarm_r", "elbow.R": "lowerarm_r", "wrist.R": "hand_r",
+             "hip.L": "thigh_l", "knee.L": "calf_l", "ankle.L": "foot_l", "ball.L": "ball_l",
+             "hip.R": "thigh_r", "knee.R": "calf_r", "ankle.R": "foot_r", "ball.R": "ball_r",
+             "_doc": "ue_mannequin preset (UE4/UE5 stock rig names), unchecked: no mappings file to read the game with"}
+}

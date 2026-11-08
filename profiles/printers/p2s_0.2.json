@@ -1,0 +1,7 @@
+{
+ "_doc": "Bambu Lab P2S (or X1C/P1S) with a 0.2 mm nozzle, PLA. Print thresholds: walls >= 0.45 mm, pins >= 0.8, barrels >= 1.0, blades >= 1.2, gaps >= 0.3 mm or fused. auto_thicken pushes walls to target_mm; the check stage flags walls under qa.min_thickness_mm that stick out (see flag.thin_part_min_protrusion_mm).",
+ "printer": {"name": "Bambu Lab P2S, 0.2 mm nozzle", "build_volume_mm": [256, 256, 256], "nozzle_mm": 0.2,
+             "thresholds_mm": {"wall": 0.45, "pin": 0.8, "barrel": 1.0, "blade": 1.2, "gap": 0.3}},
+ "auto_thicken": {"target_mm": 0.45},
+ "qa": {"min_thickness_mm": 0.4}
+}

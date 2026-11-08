@@ -1,0 +1,47 @@
+{
+ "_doc": "The Lord of the Rings: Return to Moria (Unreal Engine 4.27, IoStore, Zlib, versioned properties: no mappings file, no Oodle DLL needed). install = the game folder (the one holding Moria/). Orcs and goblins share one skeleton (Orc_Parent_Skeleton) and are assembled from body/head/armour parts in Blueprints; the leaders ship as complete meshes, so the profile names those units and the weapon their equipment Blueprint (EQ_*) holds.",
+ "name": "The Lord of the Rings: Return to Moria",
+ "adapter": "unreal_cue4parse",
+ "unreal": {
+  "game": "GAME_UE4_27",
+  "content_root": "Moria/Content",
+  "mesh_prefixes": ["Moria/Content/CharacterArt/Orcs", "Moria/Content/CharacterArt/Creatures"],
+  "anim_prefixes": ["Moria/Content/Animations/Orc"],
+  "weapon_prefixes": [],
+  "skip_mesh": "/(Armor|Armor_v2|Body|Body_v2|Head|Heads|Heads_v2)/",
+  "group_from": "/Game/CharacterArt/(?P<group>[^/]+/[^/]+)/",
+  "clip_exclude": "NoAudio|NoCurves|_Pose$|RunPose|WalkPose|Spawn_|Squat_Dig",
+  "max_clips": 40,
+  "normal_encoding": "auto",
+  "normal_green": "directx",
+  "reader_version": "otue on CUE4Parse 1.2.2.202610 (+ CUE4Parse-Natives ACL)",
+  "units": [
+   {"id": "orc_gundabad_leader", "name": "OrcLeader_Gundabad", "group": "Orcs", "class": "infantry",
+    "mesh": "Moria/Content/CharacterArt/Orcs/Gundabad/Orc_Gundabad_Leader01.Orc_Gundabad_Leader01",
+    "_source": "BP_OrcLeader_Gundabad (mesh Orc_Gundabad_Leader01); Gundabad orcs carry EQ_Orc_Gundabad_Sword_2h (IL_Orc_Gundabad_Sword_2h) = StaticMesh E_Weapon_Orc_CurvedSword2h at identity on the right-hand socket",
+    "loadouts": [
+     {"id": "sword_2h", "weapons": [{"slot": 1, "weapon_id": "CurvedSword2h", "mount": "socket:RightHandSocket",
+       "mesh": "/Game/Items/Weapons/Models/Orc/E_Weapon_Orc_CurvedSword2h.E_Weapon_Orc_CurvedSword2h"}]}
+    ],
+    "default_loadout": "sword_2h",
+    "clip_include": "^Orc_Swd2H_",
+    "_clips": "UA_* clips are unarmed (hands open); with the 2h sword the game layers Swd2H_* poses, so only those hold the sword",
+    "credits": []}
+  ]
+ },
+ "rig_map": {"pelvis": "Hips_JNT", "spine": "Spine1_JNT", "neck": "Neck0_JNT", "head": "Head_JNT", "eye": "l_eye_jnt",
+             "brow": "l_eyebrow_02_jnt",
+             "shoulder.L": "L_Upper_Arm_JNT", "elbow.L": "L_Lower_Arm_JNT", "wrist.L": "L_Hand_JNT",
+             "shoulder.R": "R_Upper_Arm_JNT", "elbow.R": "R_Lower_Arm_JNT", "wrist.R": "R_Hand_JNT",
+             "hip.L": "L_Upper_Leg_JNT", "knee.L": "L_Lower_Leg_JNT", "ankle.L": "L_Foot_JNT", "ball.L": "L_Toe_JNT",
+             "hip.R": "R_Upper_Leg_JNT", "knee.R": "R_Lower_Leg_JNT", "ankle.R": "R_Foot_JNT", "ball.R": "R_Toe_JNT",
+             "_doc": "Moria orc/goblin rig (Orc_Parent_Skeleton): *_JNT body joints, lower-case face joints"},
+ "clip_roles": [["Stand_Idle|Breathe|StanceVariation|Stand_Fidget|Stand_Roar|Taunt|CampEmo", "idle"],
+                ["Bow_Combat_Aim|_Aim_", "aim"], ["_Fire", "shoot"],
+                ["_Atk_|Combat_Atk", "melee"], ["_Walk|_Run|_Sprint|TurnIP|Transition", "move"],
+                ["HitReact_Kill|_KO_|HeavyKO", "die"], [".*", "other"]],
+ "backend": {
+  "pose_select": {"exclude_roles": ["die", "other"], "role_priority": ["idle", "melee", "move"]},
+  "_doc": "Orc attack frames make good minis, so melee clips are in; hit reactions and deaths stay out."
+ }
+}

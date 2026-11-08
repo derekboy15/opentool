@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "opentool unit list (units.json), contract 1.x",
+  "type": "object",
+  "required": ["contract", "game", "adapter", "units"],
+  "properties": {
+    "contract": {"type": "string", "pattern": "^1\\."},
+    "game": {"type": "string"},
+    "adapter": {"type": "object", "required": ["name", "version"]},
+    "units": {"type": "array", "items": {"type": "object",
+      "required": ["id", "name", "group", "class_hint", "confidence", "models", "loadouts", "default_loadout", "clips", "provenance", "credits"],
+      "properties": {
+        "class_hint": {"enum": ["infantry", "walker", "bike", "monster", "vehicle", "flyer", "other"]},
+        "confidence": {"enum": ["high", "medium", "low"]},
+        "models": {"type": "array"},
+        "loadouts": {"type": "array", "items": {"type": "object", "required": ["id", "weapons"],
+          "properties": {"weapons": {"type": "array", "items": {"type": "object", "required": ["slot", "weapon_id", "mount"],
+            "properties": {"mount": {"type": "string", "pattern": "^(joint:.+|socket:.+|bonemerge|mesh_group:.+)$"}}}}}}},
+        "clips": {"type": "array", "items": {"type": "object", "required": ["name", "role"],
+          "properties": {"role": {"enum": ["idle", "aim", "shoot", "move", "melee", "die", "other"]}}}},
+        "provenance": {"type": "object"},
+        "credits": {"type": "array"}
+      }}}
+  }
+}
